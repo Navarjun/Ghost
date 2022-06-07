@@ -149,10 +149,12 @@ module.exports = {
         query(frame) {
             return models.Tag.destroy(frame.options)
                 .then(() => null)
-                .catch(models.Tag.NotFoundError, () => {
-                    return Promise.reject(new errors.NotFoundError({
-                        message: tpl(messages.tagNotFound)
-                    }));
+                .catch((e) => {
+                    if (e instanceof models.Tag.NotFoundError) {
+                        return Promise.reject(new errors.NotFoundError({
+                            message: tpl(messages.tagNotFound)
+                        }));
+                    }
                 });
         }
     }
